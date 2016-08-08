@@ -1,5 +1,6 @@
 package com.endava.pageObjects.pageObjects;
 
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -45,19 +46,22 @@ public class RegisterPage {
 
     }
 
-    public boolean invalidRegister(){
-        WebDriverWait wait = new WebDriverWait(webDriver, 10);
-        wait.until(ExpectedConditions.elementToBeClickable(invalidCredentials));
+    public boolean invalidRegister(String email, String password){
 
-        emailField.sendKeys("laura.constantin@endava.com");
-        passwordField.sendKeys("Test123");
+        emailField.sendKeys(email);
+        passwordField.sendKeys(password);
         logInButton.click();
+        try {
+            if (invalidCredentials.isDisplayed()) {
+                return true;
+            }
+        } catch (NoSuchElementException e) {
+            return false;
+            }
 
-        if(invalidCredentials.isDisplayed()){
-            System.out.println("Credentials are invalid");
-        }
 
         return false;
+
 
     }
 

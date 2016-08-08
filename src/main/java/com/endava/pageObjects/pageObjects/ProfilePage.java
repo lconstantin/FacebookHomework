@@ -1,15 +1,13 @@
 package com.endava.pageObjects.pageObjects;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -66,22 +64,31 @@ public class ProfilePage {
     @FindBy(xpath = "//p[contains(text(),\"hello\")]")
     private WebElement messagePost;
 
-    @FindBy(xpath = "//div[@class=\"_1mf _1mj\"]/span/span")
+    @FindBy(xpath = "//div[@class=\"_1mf _1mj\"]")
     private WebElement editPost;
 
-    @FindBy(xpath = "//button[@data-testid=\"react-composer-post-button\"]")
+    @FindBy(xpath = "//button[@data-testid='react-composer-post-button']")
     private WebElement saveEditPost;
 
     public void editPost(){
-        WebDriverWait wait = new WebDriverWait(webDriver, 10);
-        wait.until(ExpectedConditions.elementToBeClickable(messagePost));
+      //  WebDriverWait wait = new WebDriverWait(webDriver, 10);
+      //  wait.until(ExpectedConditions.elementToBeClickable(messagePost));
         clickOptionArrow.click();
 
-        editOption.click();
-        editPost.clear();
+       editOption.click();
+       // editPost.clear();
         //editPost.sendKeys(Keys.BACK_SPACE);
-        editPost.sendKeys(" word");
+
+        ((JavascriptExecutor)webDriver).executeScript("arguments[0].innerText = 'something'", editPost);
+        WebDriverWait wait = new WebDriverWait(webDriver, 10);
+        wait.until(ExpectedConditions.elementToBeClickable(saveEditPost));
         saveEditPost.click();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     //xpath click share button
@@ -89,7 +96,7 @@ public class ProfilePage {
     private WebElement clickShare;
   //  (//a[contains(@title,'Send this')])[2]
 
-    @FindBy(xpath = "(//ul[@class='_54nf'])[3]/li[1]/a")
+    @FindBy(xpath = "//a[contains(@ajaxify, 'submit')]")
     //
     private WebElement shareWithFriends;
 
@@ -101,13 +108,53 @@ public class ProfilePage {
         action.moveToElement(shareButton).build().perform();
 
         shareButton.click();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        Actions actions = new Actions(webDriver);
-        actions.moveToElement(shareWithFriends).build().perform();
+
+      //  Actions actions = new Actions(webDriver);
+      //  actions.moveToElement(shareWithFriends).build().perform();
 
       shareWithFriends.click();
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
+    @FindBy(xpath = "//a[@data-tab-key='photos']")
+    private WebElement photoVideo;
+
+//    @FindBy(xpath = "//img[contains(@src,'p24x24')]")
+//    private WebElement editPhoto;
+
+    @FindBy(xpath = "//a[@data-testid='upload_photo_button']")
+    private WebElement selectPhoto;
+
+
+
+    public PhotoPage uploadPhoto(){
+        //Actions action = new Actions(webDriver);
+       // action.moveToElement(photoVideo).build().perform();
+        webDriver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
+
+        webDriver.findElement(By.xpath("//*[.='Photos']")).click();
+
+//        photoVideo.click();
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+       PhotoPage photoPage = PageFactory.initElements(webDriver, PhotoPage.class);
+
+        return photoPage;
+    }
 
 
 }
